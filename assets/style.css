@@ -1,0 +1,374 @@
+/* Webhunter — šablona webu nemovitosti.
+   Směr: tichá editoriální elegance. Fotka vede, typografie ji nepřekřikuje.
+   Fonty jsou self-hosted, web nedělá jediný požadavek ven. */
+
+@font-face{font-family:Fraunces;src:url(fonts/Fraunces-latin-ext.woff2)format('woff2');
+  font-weight:300 700;font-display:swap;unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:Fraunces;src:url(fonts/Fraunces-latin.woff2)format('woff2');
+  font-weight:300 700;font-display:swap}
+@font-face{font-family:Manrope;src:url(fonts/Manrope-latin-ext.woff2)format('woff2');
+  font-weight:300 700;font-display:swap;unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:Manrope;src:url(fonts/Manrope-latin.woff2)format('woff2');
+  font-weight:300 700;font-display:swap}
+
+:root{
+  --paper:#f6f3ed; --paper-deep:#efeae1; --ink:#17150f; --ink-soft:#3a362c;
+  --muted:#6d675b; --line:#e0dad0; --accent:#8a6a3b; --accent-deep:#6d5330;
+  --wa:#25d366; --wa-ink:#08301a;
+  --display:Fraunces,Georgia,'Times New Roman',serif;
+  --body:Manrope,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  /* 8pt škála */
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:48px; --s6:64px; --s7:96px; --s8:128px;
+  --shell:min(1200px,92vw);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);
+  font-size:17px;line-height:1.65;font-weight:400;-webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:inherit}
+h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.08;
+  letter-spacing:-.015em;margin:0;font-optical-sizing:auto}
+
+/* Zrno přes celou stránku — drží papírový dojem, nezachytává kliky. */
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9;opacity:.5;
+  mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.055'/%3E%3C/svg%3E")}
+
+.shell{width:var(--shell);margin-inline:auto}
+.eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;
+  font-weight:600;color:var(--accent)}
+
+/* ---------------------------------------------------------------- HERO */
+.hero{position:relative;min-height:100svh;display:flex;align-items:flex-end;
+  padding:var(--s6) 0 var(--s6);isolation:isolate;overflow:hidden}
+.hero__media{position:absolute;inset:0;z-index:-2}
+.hero__media img{width:100%;height:100%;object-fit:cover;
+  animation:heroZoom 18s ease-out both}
+@keyframes heroZoom{from{transform:scale(1.08)}to{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.hero__media img{animation:none}}
+/* Dva pruhy místo jednoho — text drží kontrast i nad světlou fotkou. */
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(180deg,rgba(12,10,7,.5)0%,rgba(12,10,7,.1)26%,
+    rgba(12,10,7,.55)58%,rgba(12,10,7,.9)100%)}
+@media(max-width:700px){.hero::before{background:linear-gradient(180deg,
+    rgba(12,10,7,.5)0%,rgba(12,10,7,.18)20%,rgba(12,10,7,.72)52%,rgba(12,10,7,.94)100%)}}
+.hero__in{position:relative;color:#fdfbf7}
+.hero__in>*{animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+.hero__in>:nth-child(1){animation-delay:.05s}
+.hero__in>:nth-child(2){animation-delay:.16s}
+.hero__in>:nth-child(3){animation-delay:.27s}
+.hero__in>:nth-child(4){animation-delay:.38s}
+@keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+.hero .eyebrow{color:#e8cf9f}
+.hero h1{font-size:clamp(2.6rem,7.2vw,6rem);margin:var(--s2) 0 var(--s3);
+  max-width:15ch;text-wrap:balance;text-shadow:0 2px 40px rgba(0,0,0,.35)}
+.hero__price{font-family:var(--display);font-size:clamp(1.5rem,3.4vw,2.4rem);
+  font-weight:400;font-variant-numeric:tabular-nums;display:block;margin-bottom:var(--s4)}
+.hero__facts{display:flex;flex-wrap:wrap;gap:var(--s1) var(--s4);list-style:none;
+  padding:0;margin:0;border-top:1px solid rgba(253,251,247,.28);padding-top:var(--s3)}
+.hero__facts li{font-size:15px}
+.hero__facts b{display:block;font-weight:600;font-size:19px;
+  font-variant-numeric:tabular-nums}
+.hero__facts span{color:rgba(253,251,247,.66);font-size:12px;
+  letter-spacing:.14em;text-transform:uppercase}
+
+/* ------------------------------------------------------ lepicí lišta */
+.bar{position:fixed;inset:0 0 auto;z-index:20;transform:translateY(-100%);
+  transition:transform .45s cubic-bezier(.2,.7,.2,1);
+  background:rgba(246,243,237,.88);backdrop-filter:blur(14px) saturate(1.3);
+  border-bottom:1px solid var(--line)}
+.bar.on{transform:none}
+.bar__in .btn{padding:10px 20px;font-size:15px}
+.bar__in{display:flex;align-items:center;gap:var(--s3);
+  padding:12px 0;width:var(--shell);margin-inline:auto}
+.bar__t{font-family:var(--display);font-size:17px;flex:1;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar__p{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+@media(max-width:700px){.bar__p{display:none}}
+.bar__soc{display:flex;align-items:center;justify-content:center;width:34px;height:34px;
+  border-radius:50%;border:1px solid var(--line);color:var(--ink-soft);flex:0 0 auto;
+  transition:border-color .2s,color .2s}
+.bar__soc svg{width:18px;height:18px}
+.bar__soc:hover{border-color:var(--ink);color:var(--ink)}
+@media(max-width:520px){.bar__soc{display:none}}
+
+/* --------------------------------------------------------------- sekce */
+section{padding:clamp(var(--s5),5vw,var(--s6)) 0;scroll-margin-top:76px}
+.sec-h{display:flex;align-items:baseline;gap:var(--s3);margin-bottom:var(--s4);
+  padding-bottom:var(--s2);border-bottom:1px solid var(--line)}
+.sec-h h2{font-size:clamp(1.6rem,3.2vw,2.5rem);flex:1}
+
+/* Klíčové údaje — asymetrická mřížka, první buňka zabírá dvě pole. */
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.facts div{padding:var(--s4) var(--s3);
+  border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.facts dt{font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:6px}
+.facts dd{margin:0;font-family:var(--display);font-size:1.7rem;line-height:1.15;
+  font-variant-numeric:tabular-nums}
+
+/* Popis — editoriální sazba, iniciála. */
+.prose{max-width:64ch;font-size:19px;line-height:1.78;color:var(--ink-soft)}
+.prose p{margin:0 0 1.15em}
+.prose p:first-of-type::first-letter{font-family:var(--display);float:left;
+  font-size:4.2em;line-height:.82;padding:.06em .1em 0 0;color:var(--accent)}
+
+/* Galerie — první fotka přes dva sloupce, zbytek pravidelně. */
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s2)}
+.gal button{padding:0;border:0;background:none;cursor:zoom-in;overflow:hidden;
+  position:relative;aspect-ratio:4/3;display:block}
+/* Hlavní fotka drží dvě pole na šířku i na výšku, řádky tak zůstanou zarovnané. */
+.gal button:first-child{grid-column:span 2;grid-row:span 2;aspect-ratio:auto}
+@media(max-width:900px){.gal{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.gal{grid-template-columns:1fr}
+  .gal button:first-child{grid-column:auto;grid-row:auto;aspect-ratio:4/3}}
+.gal img{width:100%;height:100%;object-fit:cover;
+  transition:transform .7s cubic-bezier(.2,.7,.2,1),filter .5s}
+.gal button:hover img,.gal button:focus-visible img{transform:scale(1.045)}
+.gal button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+/* Lightbox */
+.lb{position:fixed;inset:0;z-index:40;background:rgba(10,9,6,.94);border:0;
+  padding:0;display:none;place-items:center}
+.lb[open]{display:grid}
+.lb img{max-width:94vw;max-height:88svh;object-fit:contain}
+.lb__x{position:absolute;top:18px;right:20px;background:none;border:0;color:#fdfbf7;
+  font-size:34px;line-height:1;cursor:pointer;padding:8px}
+.lb__nav{position:absolute;top:50%;transform:translateY(-50%);background:none;border:0;
+  color:#fdfbf7;font-size:44px;cursor:pointer;padding:16px;opacity:.75}
+.lb__nav:hover{opacity:1}
+.lb__prev{left:4px}.lb__next{right:4px}
+.lb__c{position:absolute;bottom:20px;left:0;right:0;text-align:center;
+  color:rgba(253,251,247,.7);font-size:13px;font-variant-numeric:tabular-nums}
+
+/* Parametry — hairline tabulka ve dvou sloupcích. */
+.params{columns:2;column-gap:var(--s6)}
+@media(max-width:760px){.params{columns:1}}
+.params div{break-inside:avoid;display:flex;justify-content:space-between;gap:var(--s3);
+  padding:13px 0;border-bottom:1px solid var(--line);font-size:15px}
+.params dt{color:var(--muted)}
+.params dd{margin:0;text-align:right;font-weight:600}
+
+/* -------------------------------------------------------------- kontakt */
+.contact{background:var(--ink);color:var(--paper);padding:var(--s7) 0 var(--s6)}
+.contact h2{color:var(--paper)}
+.contact .sec-h{border-color:rgba(246,243,237,.2)}
+.agent{display:grid;grid-template-columns:180px 1fr;gap:var(--s5);align-items:start}
+@media(max-width:700px){.agent{grid-template-columns:1fr;gap:var(--s4)}}
+.agent__photo{width:180px;height:180px;border-radius:50%;object-fit:cover;
+  filter:grayscale(.25)}
+.agent__name{font-family:var(--display);font-size:clamp(1.8rem,4vw,2.6rem);
+  margin:0 0 var(--s1)}
+.agent__role{color:rgba(246,243,237,.62);margin:0 0 var(--s4)}
+.agent__lines{list-style:none;padding:0;margin:0 0 var(--s5);
+  display:flex;flex-direction:column;gap:10px}
+.agent__lines a{color:var(--paper);text-decoration:none;border-bottom:1px solid
+  rgba(246,243,237,.28);padding-bottom:2px;transition:border-color .25s}
+.agent__lines a:hover{border-color:var(--paper)}
+.cta{display:flex;flex-wrap:wrap;gap:var(--s2)}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:15px 26px;
+  border-radius:999px;text-decoration:none;font-weight:600;font-size:16px;
+  transition:transform .25s cubic-bezier(.2,.7,.2,1),box-shadow .25s}
+.btn:hover{transform:translateY(-2px)}
+.btn--wa{background:var(--wa);color:var(--wa-ink);
+  box-shadow:0 10px 30px -12px rgba(37,211,102,.75)}
+.btn--wa:hover{box-shadow:0 16px 38px -12px rgba(37,211,102,.9)}
+.btn--ghost{border:1px solid rgba(246,243,237,.35);color:var(--paper)}
+.btn--ghost:hover{border-color:var(--paper)}
+.btn svg{width:20px;height:20px;fill:currentColor;flex:none}
+
+.agency{display:flex;align-items:center;gap:var(--s3);margin-top:var(--s6);
+  padding-top:var(--s4);border-top:1px solid rgba(246,243,237,.2)}
+.agency img{height:46px;width:auto;background:#fff;padding:7px 11px;border-radius:6px}
+.agency b{display:block;font-weight:600}
+.agency span{color:rgba(246,243,237,.58);font-size:14px}
+
+footer{background:var(--ink);color:rgba(246,243,237,.45);font-size:13px;
+  padding:0 0 var(--s5)}
+footer a{color:rgba(246,243,237,.62)}
+footer .shell{border-top:1px solid rgba(246,243,237,.14);padding-top:var(--s4)}
+
+/* Odhalení sekcí při scrollu. */
+.rv{opacity:0;transform:translateY(28px);
+  transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none}}
+
+/* --------------------------------------------- hero z fotky na výšku
+   Když inzerát nemá jedinou fotku na šířku, roztažení přes celou obrazovku
+   ji rozmaže nebo ořízne to podstatné. Místo toho: tatáž fotka rozostřená
+   jako barevné pozadí a přes ni ostrý originál ve svém poměru.
+   Nic se nedogenerovává, jen se jinak naaranžuje to, co v inzerátu je. */
+.hero--portrait .hero__media{display:grid;place-items:center}
+.hero--portrait .hero__media img{width:100%;height:100%;object-fit:cover;
+  filter:blur(38px) saturate(1.15) brightness(.62);transform:scale(1.12);animation:none}
+/* Fotka drží pravou polovinu, text levou — nesmí se překrývat. */
+.hero--portrait .hero__plate{position:absolute;inset:0;z-index:-1;
+  display:grid;place-items:center end;padding:clamp(24px,6vh,72px) 6vw clamp(24px,6vh,72px) 0}
+.hero--portrait .hero__in{padding-right:46%}
+.hero--portrait .hero__plate img{width:auto;height:100%;max-width:44vw;
+  object-fit:contain;border-radius:4px;box-shadow:0 40px 90px -30px rgba(0,0,0,.7);
+  filter:none;transform:none;animation:heroRise 1.1s cubic-bezier(.2,.7,.2,1) both}
+@keyframes heroRise{from{opacity:0;transform:translateY(20px) scale(.985)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.hero--portrait .hero__plate img{animation:none}}
+@media(max-width:960px){
+  /* Na úzké obrazovce se fotka vrátí nahoru na střed a text jde pod ni. */
+  .hero--portrait .hero__plate{place-items:start center;padding:6vh 5vw 0}
+  .hero--portrait .hero__plate img{max-width:78vw;height:auto;max-height:44vh}
+  .hero--portrait .hero__in{padding-right:0}
+  .hero--portrait{align-items:flex-end;min-height:100svh}}
+
+/* ------------------------------------------------------------- slideshow */
+.counter{font-variant-numeric:tabular-nums;color:var(--muted);font-size:14px}
+.counter b{color:var(--ink);font-weight:600}
+.show{position:relative;background:var(--paper-deep);overflow:hidden;
+  border:1px solid var(--line)}
+.show__stage{position:relative;aspect-ratio:16/10}
+@media(max-width:640px){.show__stage{aspect-ratio:4/3}}
+.slide{margin:0;position:absolute;inset:0;opacity:0;visibility:hidden;
+  transition:opacity .55s cubic-bezier(.2,.7,.2,1)}
+.slide.is-on{opacity:1;visibility:visible}
+.slide img{width:100%;height:100%;object-fit:cover}
+.show__nav{position:absolute;top:50%;transform:translateY(-50%);z-index:2;
+  width:52px;height:52px;border:0;border-radius:50%;cursor:pointer;
+  background:rgba(246,243,237,.9);color:var(--ink);font-size:30px;line-height:1;
+  display:grid;place-items:center;transition:background .25s,transform .25s;
+  box-shadow:0 6px 20px -8px rgba(0,0,0,.4)}
+.show__nav:hover{background:var(--paper);transform:translateY(-50%) scale(1.06)}
+.show__nav:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.show__prev{left:14px}.show__next{right:14px}
+@media(max-width:560px){.show__nav{width:42px;height:42px;font-size:24px}
+  .show__prev{left:8px}.show__next{right:8px}}
+.thumbs{display:flex;gap:8px;margin-top:8px;overflow-x:auto;padding-bottom:6px;
+  scrollbar-width:thin}
+.thumbs::-webkit-scrollbar{height:6px}
+.thumbs::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
+.thumb{flex:0 0 96px;height:66px;padding:0;border:0;background:none;cursor:pointer;
+  overflow:hidden;opacity:.5;transition:opacity .3s,outline-color .2s;
+  outline:2px solid transparent;outline-offset:-2px}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.thumb.is-on{opacity:1;outline-color:var(--accent)}
+.thumb:hover{opacity:.85}
+.thumb:focus-visible{outline-color:var(--accent);opacity:1}
+
+/* ------------------------------------------------------------------ mapa */
+.map{position:relative;aspect-ratio:16/9;border:1px solid var(--line);
+  background:var(--paper-deep);overflow:hidden}
+@media(max-width:640px){.map{aspect-ratio:4/3}}
+.map iframe{width:100%;height:100%;border:0;display:block}
+.map__ask{position:absolute;inset:0;display:grid;place-content:center;
+  text-align:center;padding:var(--s4);gap:6px;
+  /* Jemný rastr místo prázdné plochy — vypadá to jako mapa, než se načte. */
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),
+    linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:44px 44px;background-position:center}
+.map__place{font-family:var(--display);font-size:clamp(1.2rem,2.6vw,1.8rem);margin:0}
+.map__note{color:var(--muted);font-size:14px;margin:0 0 var(--s2)}
+.map__gdpr{color:var(--muted);font-size:12px;max-width:42ch;margin:var(--s2) auto 0;
+  line-height:1.5}
+.btn--dark{background:var(--ink);color:var(--paper);justify-self:center}
+.btn--dark:hover{background:#000}
+
+/* ------------------------------------------- mapa poskládaná z dlaždic
+   Bez iframu a bez cizího JavaScriptu: jen obrázky dlaždic a vlastní značka.
+   Vložený iframe musel nastartovat celou aplikaci OpenStreetMap, což trvalo,
+   a značka se v úzkém výřezu ztrácela. */
+.map__tiles{position:absolute;top:50%;left:50%;display:grid;line-height:0}
+.map__tiles img{width:256px;height:256px;opacity:0;transition:opacity .4s ease}
+.map__tiles img.is-on{opacity:1}
+.map.is-on{background:#e8e2d6}
+.map__pin{position:absolute;top:50%;left:50%;width:30px;height:40px;
+  transform:translate(-50%,-100%);pointer-events:none;
+  filter:drop-shadow(0 6px 10px rgba(0,0,0,.35));
+  animation:pinDrop .55s cubic-bezier(.2,.9,.3,1.2) both}
+.map__pin svg{width:100%;height:100%;fill:var(--accent)}
+.map__pin svg circle{fill:var(--paper)}
+@keyframes pinDrop{from{opacity:0;transform:translate(-50%,-150%)}
+  to{opacity:1;transform:translate(-50%,-100%)}}
+@media(prefers-reduced-motion:reduce){.map__pin{animation:none}}
+.map__out{position:absolute;right:12px;bottom:12px;z-index:2;
+  background:rgba(246,243,237,.94);color:var(--ink);text-decoration:none;
+  padding:8px 14px;border-radius:999px;font-size:13px;font-weight:600;
+  box-shadow:0 4px 14px -6px rgba(0,0,0,.4)}
+.map__out:hover{background:var(--paper)}
+.map__credit{position:absolute;left:10px;bottom:8px;z-index:2;margin:0;
+  font-size:11px;color:var(--ink);background:rgba(246,243,237,.82);
+  padding:2px 8px;border-radius:4px}
+.map__credit a{color:inherit}
+.map--flat{aspect-ratio:auto;min-height:220px;display:grid;place-items:center}
+
+/* ------------------------------------------------------- prodejní prvky */
+.hero__cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:var(--s4)}
+.btn--clear{border:1px solid rgba(253,251,247,.5);color:#fdfbf7;backdrop-filter:blur(6px);
+  background:rgba(253,251,247,.08)}
+.btn--clear:hover{border-color:#fdfbf7;background:rgba(253,251,247,.16)}
+
+/* Výhody: to, co kupujícího zajímá první, hned nad tabulkou údajů. */
+.highlights{list-style:none;padding:0;margin:0 0 var(--s4);display:flex;
+  flex-wrap:wrap;gap:10px}
+.highlights li{display:flex;align-items:center;gap:9px;padding:10px 16px 10px 12px;
+  border:1px solid var(--line);border-radius:999px;background:var(--card,#fff);
+  font-size:15px;font-weight:600}
+.highlights svg{width:20px;height:20px;color:var(--accent);flex:none}
+
+/* Cena za metr a splátka — čísla, na která se kupující ptá jako na druhé. */
+.money{display:flex;flex-wrap:wrap;gap:1px;margin-top:var(--s4);
+  background:var(--line);border:1px solid var(--line)}
+.money div{flex:1 1 220px;background:var(--paper);padding:var(--s3) var(--s4)}
+.money b{display:block;font-family:var(--display);font-size:clamp(1.5rem,3vw,2.1rem);
+  font-weight:500;font-variant-numeric:tabular-nums;line-height:1.1}
+.money span{color:var(--muted);font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+.money__note{color:var(--muted);font-size:12.5px;margin:10px 0 0}
+
+/* Výzva uprostřed stránky: rozhodnutí padá hned po fotkách. */
+.pitch{background:var(--paper-deep);text-align:center;
+  border-block:1px solid var(--line)}
+.pitch__q{font-family:var(--display);font-size:clamp(1.6rem,3.4vw,2.4rem);margin:0 0 6px}
+.pitch__s{color:var(--muted);margin:0 0 var(--s4)}
+.pitch .cta{justify-content:center}
+
+/* ── Video a virtuální prohlídka ──────────────────────────────────────────
+   Přehrávač se vkládá až po kliknutí, do té doby je tu jen náhled.
+   Návštěvník tak nedostane cizí cookies dřív, než o prohlídku požádá. */
+.media-mrizka{display:grid;gap:var(--s4);
+  grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr))}
+.media-karta{position:relative;border-radius:var(--r);overflow:hidden;
+  border:1px solid var(--line);background:var(--paper-deep)}
+.media-karta video{display:block;width:100%;aspect-ratio:16/9;background:#000}
+.media-karta .media-popis{display:block;padding:var(--s3) var(--s4);font-weight:600}
+.dokumenty{list-style:none;margin:0;padding:0;display:grid;gap:var(--s3)}
+.dokumenty li a{display:flex;align-items:center;gap:var(--s3);padding:var(--s4);
+  border:1px solid var(--line);border-radius:var(--r);color:inherit;text-decoration:none;
+  font-weight:600;transition:border-color .2s,background .2s}
+.dokumenty li a::before{content:"↓";color:var(--muted)}
+.dokumenty li a:hover{border-color:var(--ink);background:var(--paper-deep)}
+.media-plocha{position:relative;display:block;width:100%;padding:0;border:0;
+  aspect-ratio:16/9;cursor:pointer;background:var(--paper-deep);color:inherit;
+  font:inherit;text-align:left;overflow:hidden}
+.media-plocha img{width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .5s cubic-bezier(.22,1,.36,1)}
+.media-plocha:hover img,.media-plocha:focus-visible img{transform:scale(1.03)}
+.media-plocha::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(12,14,18,.62),rgba(12,14,18,.12) 55%,transparent)}
+.media-plocha--mp{display:flex;flex-direction:column;align-items:flex-start;
+  justify-content:flex-end;gap:4px;padding:var(--s4);
+  background:linear-gradient(140deg,var(--ink),#1d2430)}
+.media-plocha--mp::after{content:none}
+.media-ikona{position:absolute;inset:0;margin:auto;width:64px;height:64px;
+  display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.94);
+  color:var(--ink);font-size:22px;line-height:1;padding-left:4px;z-index:1;
+  box-shadow:0 6px 20px rgba(12,14,18,.28);transition:transform .25s}
+.media-plocha:hover .media-ikona{transform:scale(1.07)}
+.media-plocha--mp .media-ikona{position:static;margin:0 0 auto;width:44px;height:44px;
+  font-size:20px;padding:0;background:rgba(255,255,255,.14);color:#fff;box-shadow:none}
+.media-popis{position:absolute;left:var(--s4);bottom:var(--s4);z-index:1;
+  color:#fff;font-weight:600;font-size:1.05rem;text-shadow:0 1px 10px rgba(0,0,0,.5)}
+.media-plocha--mp .media-popis{position:static;text-shadow:none}
+.media-sub{color:rgba(255,255,255,.78);font-size:.9rem}
+.media-karta iframe{display:block;width:100%;aspect-ratio:16/9;border:0}
+.media-pozn{color:var(--muted);font-size:.88rem;margin:var(--s3) 0 0}
